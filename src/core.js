@@ -56,7 +56,7 @@ Core.prototype.update = function(delta) {
     const COMPARED_FRAMERATE = 60;
 
     // Calculate time multiplier
-    let tm = delta / (1.0/COMPARED_FRAMERATE)
+    let tm = delta / (1.0/COMPARED_FRAMERATE);
 
     // Update the active scene
     if(this.activeScene != null &&
@@ -191,6 +191,9 @@ Core.prototype.loop = function(ts) {
         this.drawLoadingScreen();
     }
 
+    // Store old time
+    this.oldTime = ts;
+
     // Next frame
     window.requestAnimationFrame( (ts) => this.loop(ts) );
 }
@@ -223,5 +226,16 @@ Core.prototype.changeScene = function(name, param) {
                 return;
             }
         }
+    }
+}
+
+
+// Add a scene
+Core.prototype.addScene = function(scene, makeActive) {
+
+    this.scenes.push(scene);
+    if(makeActive) {
+
+        this.activeScene = scene;
     }
 }

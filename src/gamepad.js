@@ -78,8 +78,8 @@ Vpad.prototype.update = function() {
     // }
 
     // Calculate delta
-    this.delta.x = this.stick.x - this.oldStick.x;
-    this.delta.y = this.stick.y - this.oldStick.y;
+    this.stickDelta.x = this.stick.x - this.oldStick.x;
+    this.stickDelta.y = this.stick.y - this.oldStick.y;
 
     // Update buttons
     for(k in this.buttonKeys) {
