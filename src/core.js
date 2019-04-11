@@ -35,8 +35,9 @@ Core.prototype.init = function(assetContent, padConfig) {
     this.graphics = new GraphicsCore(this.assets.bitmaps);
     this.input = new InputManager();
     this.audio = new AudioPlayer();
-    this.vpad = new Gamepad(padConfig);
-    this.evMan = new EventManager(this.audio, this.assets.sounds, this.vpad);
+    this.vpad = new Vpad(this.input, padConfig);
+    this.evMan = new EventManager(this, 
+        this.audio, this.assets.sounds, this.vpad);
 
     // Set default listeners
     window.addEventListener("resize", () => {
@@ -64,11 +65,10 @@ Core.prototype.update = function(delta) {
         this.activeScene.update(this.evMan, tm);
     }
 
-    // TODO: Update gamepad
+    // Update input
     this.input.update();
+    this.vpad.update();
 }
-
-
 
 
 // Draw loading screen
@@ -205,4 +205,23 @@ Core.prototype.run = function(fps, assetContent, padConfig) {
 
     // Enter the loop
     window.requestAnimationFrame( (ts) => this.loop(ts) );
+}
+
+
+// Change scene
+Core.prototype.changeScene = function(name, param) {
+
+    // Find a corresponding scene
+    for(let i = 0; i < this.scenes.length; ++ i) {
+
+        if(this.scenes[i].name == name) {
+
+            this.activeScene = this.scenes[i];
+            if(this.activeScene.onChange != null) {
+
+                this.activeScene.onChange(param);
+                return;
+            }
+        }
+    }
 }

@@ -21,3 +21,7 @@ Vec2.prototype.add = function(x, y) {
 
     return new Vec2(this.x + x, this.y + y);
 }
+Vec2.prototype.copy = function() {
+
+    return new Vec2(this.x, this.y);
+}
