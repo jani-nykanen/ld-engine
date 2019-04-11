@@ -100,9 +100,6 @@ Core.prototype.drawLoadingScreen = function() {
 // Draw
 Core.prototype.draw = function() {
 
-    // TEMPORARY!
-    this.graphics.clear(170, 170, 170);
-
     // Draw the active scene
     if(this.activeScene != null &&
         this.activeScene.draw != null) {
