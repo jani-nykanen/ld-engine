@@ -5,7 +5,6 @@
 //
 
 
-
 // Key states
 let State = {
     Up : 0,

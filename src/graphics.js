@@ -15,7 +15,7 @@ let Flip = {
 
 
 // Constructor
-let GraphicsCore = function() {
+let GraphicsCore = function(bitmaps) {
 
     // Get canvas & context
     this.canvas = document.getElementById("canvas");
@@ -24,6 +24,9 @@ let GraphicsCore = function() {
 
     // Resize canvas now
     this.resize(window.innerWidth, window.innerHeight);
+
+    // Reference to bitmaps
+    this.bitmaps = bitmaps;
 }
 
 
@@ -69,6 +72,14 @@ GraphicsCore.prototype.resize = function(w, h) {
 }
 
 
+// Set global alpha
+GraphicsCore.prototype.setGlobalAlpha = function(a) {
+
+    if(a == null) a = 1.0;
+    this.ctx.globalAlpha = a;
+}
+
+
 // Clear screen
 GraphicsCore.prototype.clear = function(r, g, b) {
 
@@ -76,4 +87,147 @@ GraphicsCore.prototype.clear = function(r, g, b) {
 
     c.fillStyle = this.getColorString(r, g, b);
     c.fillRect(0, 0, this.canvas.width, this.canvas.height);
+}
+
+
+// Draw a bitmap
+GraphicsCore.prototype.drawBitmap = 
+    function (bmp, x, y, flip) {
+
+    this.drawBitmapRegion(bmp, 0, 0, bmp.width, bmp.height, 
+        x, y, flip);
+}
+
+
+// Draw a scaled bitmap
+GraphicsCore.prototype.drawScaledBitmap = 
+    function (bmp, dx, dy, dw, dh,  flip) {
+
+    this.drawScaledBitmapRegion(bmp, 0, 0, bmp.width, bmp.height, 
+            dx, dy, dw, dh, flip);
+}
+
+
+// Draw a bitmap region
+GraphicsCore.prototype.drawBitmapRegion = 
+    function (bmp, sx, sy, sw, sh, dx, dy, flip) {
+
+    this.drawScaledBitmapRegion(bmp, sx, sy, sw, sh, 
+        dx, dy, sw, sh, flip);
+}
+
+
+
+// Draw a scaled bitmap region
+GraphicsCore.prototype.drawScaledBitmapRegion = 
+    function (bmp, sx, sy, sw, sh, 
+                   dx, dy, dw, dh, 
+                   flip) {
+
+    if(dw <= 0 || dh <= 0 || sw <= 0 || sh <= 0) 
+        return;
+
+    // Only integer positions etc. are
+    // allowed
+    sx |= 0;
+    sy |= 0;
+    sw |= 0;
+    sh |= 0;
+
+    dx |= 0;
+    dy |= 0;
+    dw |= 0;
+    dh |= 0;
+
+    flip = flip | Flip.None;
+    let c = this.ctx;
+
+    // If flipping, save the current transformations
+    // state
+    if (flip != Flip.None) {
+        c.save();
+    }
+
+    // Flip horizontally
+    if ((flip & Flip.Horizontal) != 0) {
+
+        c.translate(dw, 0);
+        c.scale(-1, 1);
+        dx *= -1;
+    }
+    // Flip vertically
+    if ((flip & Flip.Vertical) != 0) {
+
+        c.translate(0, dh);
+        c.scale(1, -1);
+        dy *= -1;
+    }
+
+    c.drawImage(bmp, sx, sy, sw, sh, dx, dy, dw, dh);
+
+    // ... and restore the old
+    if (flip != Flip.None) {
+
+        c.restore();
+    }
+}
+
+
+// Draw text
+GraphicsCore.prototype.drawText = function (bmp, text, dx, dy, xoff, yoff, center) {
+
+    let cw = bmp.width / 16;
+    let ch = cw;
+    let len = text.length;
+    let x = dx;
+    let y = dy;
+    let c = 0;
+
+    let sx = 0;
+    let sy = 0;
+
+    // Center the text
+    if (center) {
+
+        dx -= ((len) / 2.0 * (cw + xoff));
+        x = dx;
+    }
+
+    // Draw every character
+    for (let i = 0; i < len; ++i) {
+
+        c = text.charCodeAt(i);
+        // Newline
+        if (c == '\n') {
+
+            x = dx;
+            y += yoff + ch;
+            continue;
+        }
+
+        sx = c % 16;
+        sy = (c / 16) | 0;
+
+        // Draw character
+        this.drawBitmapRegion(bmp, sx * cw, sy * ch, cw, ch,
+            x, y,
+            Flip.NONE);
+
+        x += cw + xoff;
+    }
+}
+
+
+// Draw a filled rectangle
+GraphicsCore.prototype.fillRect = function (x, y, w, h, col) {
+
+    let c = this.ctx;
+    // Set color, if given
+    if(col != null) {
+
+        c.fillStyle = this.getColorString(col.r, col.g, col.b, col.a);
+    }
+
+    // Draw the rectangle
+    c.fillRect(x | 0, y | 0, w | 0, h | 0);
 }

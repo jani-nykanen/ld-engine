@@ -19,16 +19,24 @@ let Core = function() {
     // Old timestamp & time sum
     this.oldTime = -1;
     this.timeSum = 0;
+
+    // If "onLoad" is called
+    this.onLoadCalled = false;
 }
 
 
 // Initialize
-Core.prototype.init = function() {
+Core.prototype.init = function(assetContent, padConfig) {
+
+    // Set assets loading
+    this.assets = new AssetPack(assetContent);
 
     // Create components
-    this.graphics = new GraphicsCore();
+    this.graphics = new GraphicsCore(this.assets.bitmaps);
     this.input = new InputManager();
-    this.evMan = null;
+    this.audio = new AudioPlayer();
+    this.vpad = new Gamepad(padConfig);
+    this.evMan = new EventManager(this.audio, this.assets.sounds, this.vpad);
 
     // Set default listeners
     window.addEventListener("resize", () => {
@@ -56,7 +64,36 @@ Core.prototype.update = function(delta) {
         this.activeScene.update(this.evMan, tm);
     }
 
-    // TODO: Update input & gamepad
+    // TODO: Update gamepad
+    this.input.update();
+}
+
+
+
+
+// Draw loading screen
+Core.prototype.drawLoadingScreen = function() {
+
+    let barWidth = this.canvas.width / 4;
+    let barHeight = barWidth / 8;
+
+    // Black background
+    this.graphics.clearScreen(0, 0, 0);
+
+    let t = this.assets.getPercentage();
+    let x = this.canvas.width/2-barWidth/2;
+    let y = this.canvas.height/2-barHeight/2;
+
+    // Draw outlines
+    this.graphics.fillRect(x-2, y-2, barWidth+4, barHeight+4,
+        {r: 255, g: 255, b: 255});
+        this.graphics.fillRect(x-1, y-1, barWidth+2, barHeight+2,
+        {r: 0, g: 0, b: 0});
+
+    // Draw bar
+    let w = (barWidth*t) | 0;
+    this.graphics.fillRect(x, y, w, barHeight,
+        {r: 255, g: 255, b: 255});
 }
 
 
@@ -75,6 +112,21 @@ Core.prototype.draw = function() {
 }
 
 
+// "On load" event
+Core.prototype.onLoad = function() {
+
+    let s;
+    for(let i = 0; i < this.scenes.length; ++ i) {
+
+        s = this.scenes[i];
+        if(s.onLoad != null) {
+
+            s.onLoad(this.assets);
+        }
+    }
+}
+
+
 // Loop
 Core.prototype.loop = function(ts) {
 
@@ -89,13 +141,23 @@ Core.prototype.loop = function(ts) {
     // Update time sum if assets are loaded
     let target = 1.0 / this.framerate;
     let delta = ts - this.oldTime;
-    //if(this.ass.hasLoaded())
-    this.timeSum += delta / 1000.0;
+    if(this.assets.hasLoaded()) {
+
+        // Update time sum
+        this.timeSum += delta / 1000.0;
+
+        // Call "onLoad" to scenes
+        if(!this.onLoadCalled) {
+
+            this.onLoad();
+        }
+    }
 
     // If enough time has passed, update frame
     let updateCount = 0;
     let redraw = false;
-    while(this.timeSum >= target) {
+    while(this.assets.hasLoaded() &&
+          this.timeSum >= target) {
          
         // Enable re-drawing the frame
         redraw = true;
@@ -116,9 +178,17 @@ Core.prototype.loop = function(ts) {
     }
 
     // (Re)draw the scene
-    if(redraw) {
+    if(this.assets.hasLoaded()) {
 
-        this.draw();
+        if(redraw) {
+
+            this.draw();
+        }
+    }
+    else {
+        
+        // Draw loading screen
+        this.drawLoadingScreen();
     }
 
     // Next frame
@@ -127,11 +197,11 @@ Core.prototype.loop = function(ts) {
 
 
 // Run
-Core.prototype.run = function(fps) {
+Core.prototype.run = function(fps, assetContent, padConfig) {
 
     // Initialize
-    this.framerate = fps ? fps : 30;
-    this.init();
+    this.framerate = fps == null ? 30 : fps;
+    this.init(assetContent, padConfig);
 
     // Enter the loop
     window.requestAnimationFrame( (ts) => this.loop(ts) );
