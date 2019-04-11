@@ -16,6 +16,7 @@ let AssetPack = function(content) {
     // Assets
     this.bitmaps = {};
     this.audio = {};
+    this.documents = {};
 
     // If something to load, load
     if(content != null) {
@@ -28,10 +29,17 @@ let AssetPack = function(content) {
         }
 
         // Set sounds to be loaded
-        for(let k in content.soundList) {
+        for(let k in content.sounds) {
 
             this.loadSound(k, 
                 content.soundPath + "/" + content.sounds[k]);
+        }
+
+        // Set documents to be loaded
+        for(let k in content.documents) {
+
+            this.loadXML(k, 
+                content.docPath + "/" + content.documents[k]);
         }
 
     }
@@ -59,6 +67,32 @@ AssetPack.prototype.loadSound = function(name, url) {
         src: [url],
         onload: () => {++this.loaded;}
     });
+}
+
+
+// Load an XML document
+AssetPack.prototype.loadXML = function(name, url) {
+
+    ++ this.total;
+
+    let xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("text/xml");
+    xobj.open("GET", url, true);
+
+    // When loaded
+    xobj.onreadystatechange = () => {
+
+        if (xobj.readyState == 4 ) {
+
+            if(String(xobj.status) == "200") {
+                
+                this.documents[name] = xobj.responseText;
+            }
+            ++ this.loaded;
+        }
+            
+    };
+    xobj.send(null);  
 }
 
 

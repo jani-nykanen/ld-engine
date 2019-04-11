@@ -74,15 +74,15 @@ Core.prototype.update = function(delta) {
 // Draw loading screen
 Core.prototype.drawLoadingScreen = function() {
 
-    let barWidth = this.canvas.width / 4;
+    let barWidth = this.graphics.canvas.width / 4;
     let barHeight = barWidth / 8;
 
     // Black background
-    this.graphics.clearScreen(0, 0, 0);
+    this.graphics.clear(0, 0, 0);
 
     let t = this.assets.getPercentage();
-    let x = this.canvas.width/2-barWidth/2;
-    let y = this.canvas.height/2-barHeight/2;
+    let x = this.graphics.canvas.width/2-barWidth/2;
+    let y = this.graphics.canvas.height/2-barHeight/2;
 
     // Draw outlines
     this.graphics.fillRect(x-2, y-2, barWidth+4, barHeight+4,
@@ -150,6 +150,7 @@ Core.prototype.loop = function(ts) {
         if(!this.onLoadCalled) {
 
             this.onLoad();
+            this.onLoadCalled = true;
         }
     }
 

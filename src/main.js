@@ -20,6 +20,7 @@ TestScene.prototype.init = function() {
 // On load
 TestScene.prototype.onLoad = function(assets) {
 
+    console.log(assets.documents.test);
 }
 
 
@@ -40,6 +41,16 @@ TestScene.prototype.draw = function(g) {
 }
 
 
+// Asset content
+let assetsContent = {
+
+    docPath: "./",
+    documents: {
+
+        test: "test.xml",
+    }
+}
+
 
 // Main function
 function main() {
@@ -50,5 +61,5 @@ function main() {
     c.addScene(new TestScene(), true);
 
     // Run
-    c.run(60);
+    c.run(60, assetsContent);
 }
