@@ -9,7 +9,7 @@ if len(sys.argv) < PARAM_COUNT:
     sys.exit(1)
 
 # Open file
-file = open("./template/index.html", "r")
+file = open("../template/index.html", "r")
 
 # Read content
 content = file.read()

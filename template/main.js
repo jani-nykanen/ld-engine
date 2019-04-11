@@ -24,7 +24,7 @@ let main = function() {
     let c = new Core();
 
     // Add scenes
-    c.addScene(new Gamepad(), true);
+    c.addScene(new Game(), true);
     // Add more scenes here
 
     // Run application
