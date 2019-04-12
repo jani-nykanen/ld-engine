@@ -11,6 +11,7 @@ let Core = function() {
     // Scenes
     this.scenes = new Array();
     this.activeScene = null;
+    this.globalScene = null;
 
     // Framerate (default is 30)
     // Affects only the game logic
@@ -36,8 +37,10 @@ Core.prototype.init = function(assetContent, padConfig) {
     this.input = new InputManager();
     this.audio = new AudioPlayer();
     this.vpad = new Vpad(this.input, padConfig);
+    this.tr = new Transition();
     this.evMan = new EventManager(this, 
-        this.audio, this.assets.sounds, this.vpad);
+        this.audio, this.assets.sounds, 
+        this.vpad, this.tr);
 
     // Set default listeners
     window.addEventListener("resize", () => {
@@ -45,6 +48,17 @@ Core.prototype.init = function(assetContent, padConfig) {
                              window.innerHeight);
         }
     );
+
+    // Initialize scenes
+    let s;
+    for(let i = 0; i < this.scenes.length; ++ i) {
+
+        s = this.scenes[i];
+        if(s.init != null) {
+
+            s.init(this.evMan);
+        }
+    }
 }
 
 
@@ -65,9 +79,19 @@ Core.prototype.update = function(delta) {
         this.activeScene.update(this.evMan, tm);
     }
 
+    // Update the global scene
+    if(this.globalScene != null &&
+        this.globalScene.update != null) {
+ 
+         this.globalScene.update(this.evMan, tm);
+     }
+
     // Update input
     this.input.update();
     this.vpad.update();
+
+    // Update transition
+    this.tr.update(tm);
 }
 
 
@@ -105,7 +129,17 @@ Core.prototype.draw = function() {
         this.activeScene.draw != null) {
  
          this.activeScene.draw(this.graphics);
-     }
+    }
+
+    // Draw the global scene
+    if(this.globalScene != null &&
+        this.globalScene.draw != null) {
+ 
+        this.globalScene.draw(this.graphics);
+    }
+
+    // Draw transition
+    this.tr.draw(this.graphics);
 }
 
 
@@ -229,11 +263,15 @@ Core.prototype.changeScene = function(name, param) {
 
 
 // Add a scene
-Core.prototype.addScene = function(scene, makeActive) {
+Core.prototype.addScene = function(scene, makeActive, makeGlobal) {
 
     this.scenes.push(scene);
     if(makeActive) {
 
         this.activeScene = scene;
+    }
+    if(makeGlobal) {
+
+        this.globalScene = scene;
     }
 }

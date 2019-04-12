@@ -5,13 +5,14 @@
 
 
 // Constructor
-let EventManager = function(core, audio, sounds, vpad) {
+let EventManager = function(core, audio, sounds, vpad, transition) {
 
     // Store references to components
     this.core = core;
     this.audio = audio;
     this.sounds = sounds;
     this.vpad = vpad;
+    this.transition = transition;
 }
 
 

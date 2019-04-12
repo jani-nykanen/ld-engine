@@ -24,5 +24,7 @@ cp ../lib/howler.min.js "../$1/lib/howler.min.js"
 cp ../dist/ld_engine.min.js "../$1/lib/ld_engine.min.js"
 
 # Copy template files
+cp ../template/global.js "../$1/src/global.js"
 cp ../template/main.js "../$1/src/main.js"
 cp ../template/game/game.js "../$1/src/game/game.js"
+

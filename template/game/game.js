@@ -9,7 +9,7 @@ let Game = function() {
 
 
 // Initialize
-Game.prototype.init = function() {
+Game.prototype.init = function(evMan) {
 
     // Implement
 }

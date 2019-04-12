@@ -24,7 +24,9 @@ let main = function() {
     let c = new Core();
 
     // Add scenes
+    // Help: addScene(scene, makeActive=false, makeGlobal=false)
     c.addScene(new Game(), true);
+    c.addScene(new Global(), false, true);
     // Add more scenes here
 
     // Run application
