@@ -27,6 +27,9 @@ let GraphicsCore = function(bitmaps) {
 
     // Reference to bitmaps
     this.bitmaps = bitmaps;
+    
+    // Translation
+    this.tr = new Vec2(0, 0);
 }
 
 
@@ -126,6 +129,10 @@ GraphicsCore.prototype.drawScaledBitmapRegion =
 
     if(dw <= 0 || dh <= 0 || sw <= 0 || sh <= 0) 
         return;
+        
+    // Apply translation
+    dx += this.tr.x;
+    dy += this.tr.y;
 
     // Only integer positions etc. are
     // allowed
@@ -227,7 +234,28 @@ GraphicsCore.prototype.fillRect = function (x, y, w, h, col) {
 
         c.fillStyle = this.getColorString(col.r, col.g, col.b, col.a);
     }
+    
+    // Apply translation
+    x += this.tr.x;
+    y += this.tr.y;
 
     // Draw the rectangle
     c.fillRect(x | 0, y | 0, w | 0, h | 0);
 }
+
+
+// Set translation
+GraphicsCore.prototype.setTranslation = function(x, y) {
+
+    this.tr.x = x;
+    this.tr.y = y;
+}
+
+
+// Translate
+GraphicsCore.prototype.translate = function(x, y) {
+
+    this.tr.x += x;
+    this.tr.y += y;
+}
+
