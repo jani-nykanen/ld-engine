@@ -1,5 +1,8 @@
+//
+// LDEngine 
 // A simple transition manager
 // (c) 2019 Jani Nykänen
+//
 
 // Initialize transition time
 const INITIAL_TRANSITION_TIME = 60;

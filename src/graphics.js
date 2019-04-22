@@ -205,7 +205,7 @@ GraphicsCore.prototype.drawText = function (bmp, text, dx, dy, xoff, yoff, cente
 
         c = text.charCodeAt(i);
         // Newline
-        if (c == '\n') {
+        if (text[i] == '\n') {
 
             x = dx;
             y += yoff + ch;

@@ -39,7 +39,7 @@ Core.prototype.init = function(assetContent, padConfig) {
     this.vpad = new Vpad(this.input, padConfig);
     this.tr = new Transition();
     this.evMan = new EventManager(this, 
-        this.audio, this.assets.sounds, 
+        this.audio, this.assets.audio, 
         this.vpad, this.tr);
 
     // Set default listeners
@@ -87,8 +87,8 @@ Core.prototype.update = function(delta) {
      }
 
     // Update input
-    this.input.update();
     this.vpad.update();
+    this.input.update();
 
     // Update transition
     this.tr.update(tm);

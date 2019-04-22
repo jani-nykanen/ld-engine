@@ -26,6 +26,7 @@ let Vpad = function(input, config) {
         for(let k in config.buttons) {
 
             this.buttons[k] = {
+
                 key: config.buttons[k],
                 state: State.Up
             }
@@ -82,9 +83,10 @@ Vpad.prototype.update = function() {
     this.stickDelta.y = this.stick.y - this.oldStick.y;
 
     // Update buttons
-    for(k in this.buttonKeys) {
+    for(k in this.buttons) {
 
-        this.buttons[k].state = this.input.getKey(this.buttons[k].key);
+        this.buttons[k].state = 
+            this.input.getKey(this.buttons[k].key);
     }
 }
 
