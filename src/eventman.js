@@ -13,6 +13,7 @@ let EventManager = function(core, audio, sounds, vpad, transition) {
     this.sounds = sounds;
     this.vpad = vpad;
     this.transition = transition;
+    this.input = vpad.input;
 }
 
 

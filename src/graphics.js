@@ -22,6 +22,10 @@ let GraphicsCore = function(bitmaps) {
     this.ctx = this.canvas.getContext("2d");
     this.ctx.imageSmoothingEnabled = false;
 
+    // Canvas position & size
+    this.cpos = new Vec2();
+    this.csize = new Vec2();
+
     // Resize canvas now
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -64,6 +68,12 @@ GraphicsCore.prototype.resize = function(w, h) {
     height = c.height * mul;
     x = w/2 - width/2;
     y = h/2 - height/2;
+
+    // Store position & size
+    this.cpos.x = x;
+    this.cpos.y = y;
+    this.csize.x = width;
+    this.csize.y = height;
     
     // Set style properties
     let top = String(y | 0) + "px";

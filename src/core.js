@@ -34,7 +34,7 @@ Core.prototype.init = function(assetContent, padConfig) {
 
     // Create components
     this.graphics = new GraphicsCore(this.assets.bitmaps);
-    this.input = new InputManager();
+    this.input = new InputManager(this.graphics);
     this.audio = new AudioPlayer();
     this.vpad = new Vpad(this.input, padConfig);
     this.tr = new Transition();
