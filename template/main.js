@@ -8,13 +8,30 @@ let main = function() {
     // Assets
     let assetContent = {
 
-        // Fill this
+        // Bitmaps
+        bitmapPath: "assets/bitmaps",
+        bitmaps: {
+            font: "font.png"
+        },
+
+        // Documents
+        docPath: "assets/maps",
+        documents: { },
+
+        // Samples
+        soundPath: "assets/audio",
+        sounds: { },
     }
 
     // Gamepad config
     let gamepadConfig = {
 
-        // Fill this
+        buttons: {
+            fire1: 90,
+            fire2: 88,
+            start: 13,
+            cancel: 27, 
+        }
     }
     // Derired framerate
     let framerate = 30;

@@ -139,7 +139,5 @@ Transition.prototype.draw = function(g) {
 
     default:
         break;
-    }
-
-    
+    }    
 }

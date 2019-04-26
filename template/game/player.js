@@ -98,6 +98,91 @@ Player.prototype.update = function(evMan, cam, tm) {
 }
 
 
+// Get a floor collision
+Player.prototype.floorCollision = function(x, y, w, tm) {
+
+    const COL_OFF_TOP = -0.5;
+    const COL_OFF_BOTTOM = 1.0;
+
+    if(this.dying || this.speed.y < 0.0)
+        return false;
+
+    // Check if inside the horizontal area
+    if(!(this.pos.x+this.width/2 >= x && 
+        this.pos.x-this.width/2 <= x+w))
+        return false;
+
+    // Vertical collision
+    if(this.pos.y+this.height/2 >= y+COL_OFF_TOP*tm && 
+       this.pos.y+this.height/2 <= y+(COL_OFF_BOTTOM+this.speed.y)*tm) {
+
+         this.pos.y = y-this.height/2;
+         this.speed.y = 0.0;
+         return true;
+    }
+
+    return false;
+}
+
+
+// Get a ceiling collision
+Player.prototype.ceilingCollision = function(x, y, w, tm) {
+
+    const COL_OFF_TOP = -1.0;
+    const COL_OFF_BOTTOM = 0.5;
+
+    if(this.dying || this.speed.y > 0.0)
+        return;
+
+    // Check if inside the horizontal area
+    if(!(this.pos.x+this.width/2 >= x && 
+        this.pos.x-this.width/2 < x+w))
+        return;
+
+    // Vertical collision
+    if(this.pos.y-this.height/2 <= y+COL_OFF_BOTTOM*tm && 
+       this.pos.y-this.height/2 >= y+(COL_OFF_TOP+this.speed.y)*tm) {
+
+         this.pos.y = y+this.height/2;
+         this.speed.y = 0.0;
+    }
+}
+
+
+// Get a wall collision
+Player.prototype.wallCollision = function(dir, x, y, h, tm) {
+
+    const EPS = 0.01;
+
+    const COL_OFF_NEAR = 0.5;
+    const COL_OFF_FAR = 1.0;
+
+    if(this.dying || this.speed.x*dir < EPS)
+        return false;
+
+    // Check if inside the collision area vertically
+    if(this.pos.y <= y || this.pos.y-this.height >= y+h) {
+        return false;
+    }
+
+    // Horizontal collision
+    if((dir == 1 && 
+        this.pos.x+this.width/2 >= x - COL_OFF_NEAR*tm && 
+        this.pos.x+this.width/2 <= x + (COL_OFF_FAR+this.speed.x)*tm) ||
+       (dir == -1 && 
+        this.pos.x-this.width/2  <= x + COL_OFF_NEAR*tm && 
+        this.pos.x-this.width/2  >= x-(COL_OFF_FAR-this.speed.x)*tm)) {
+        
+        this.speed.x = 0;
+        this.pos.x = x - this.width/2 * dir;
+
+        return true;
+    }
+    return false;
+}
+
+
+
 // Draw
 Player.prototype.draw = function(g) {
 

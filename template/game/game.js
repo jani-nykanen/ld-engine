@@ -28,12 +28,20 @@ Game.prototype.onLoad = function(assets, evMan, g) {
 // Update
 Game.prototype.update = function(evMan, tm) {
 
+    if(evMan.transition.active) return;
+
     // Update objects
     this.objm.update(evMan, this.cam, tm);
     this.objm.stageCollision(this.stage, this.cam, tm);
 
     // Update stage
     this.stage.update(evMan, tm);
+
+    // Transition test
+    if(evMan.vpad.buttons.fire1.state == State.Pressed) {
+
+        evMan.transition.activate(Fade.In, 2.0);
+    }
 }
 
 
@@ -55,4 +63,9 @@ Game.prototype.draw = function(g) {
     this.stage.draw(g, this.cam);
     // Draw objects
     this.objm.draw(g);
+
+    // Reset camera
+    g.setTranslation();
+    // Draw "Hello world!"
+    g.drawText(g.bitmaps.font, "PRESS 'Z'.", 2, 2, 0, 0);
 }
