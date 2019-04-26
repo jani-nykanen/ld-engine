@@ -31,6 +31,7 @@ cp ../template/main.js "../$1/src/main.js"
 cp ../template/game/camera.js "../$1/src/game/camera.js"
 cp ../template/game/stage.js "../$1/src/game/stage.js"
 cp ../template/game/objman.js "../$1/src/game/objman.js"
+cp ../template/game/gameobject.js "../$1/src/game/gameobject.js"
 cp ../template/game/player.js "../$1/src/game/player.js"
 cp ../template/game/game.js "../$1/src/game/game.js"
 # Copy template assets
