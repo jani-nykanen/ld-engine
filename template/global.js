@@ -10,14 +10,15 @@ let Global = function() {
 
 
 // Initialize
-Global.prototype.init = function(evMan) {
+Global.prototype.init = function(evMan, g) {
 
-    // Implement
+    // Transition using box
+    evMan.transition.activate(Fade.Out, 2.0, null, {r:0,g:0,b:0}, null, Effect.Bars);
 }
 
 
 // On load
-Global.prototype.onLoad = function(assets) {
+Global.prototype.onLoad = function(assets, evMan, g) {
 
     // Implement
 }

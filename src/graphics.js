@@ -257,6 +257,9 @@ GraphicsCore.prototype.fillRect = function (x, y, w, h, col) {
 // Set translation
 GraphicsCore.prototype.setTranslation = function(x, y) {
 
+    if(x == null) x = 0;
+    if(y == null) y = 0;
+
     this.tr.x = x;
     this.tr.y = y;
 }

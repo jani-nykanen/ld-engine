@@ -56,7 +56,7 @@ Core.prototype.init = function(assetContent, padConfig) {
         s = this.scenes[i];
         if(s.init != null) {
 
-            s.init(this.evMan);
+            s.init(this.evMan, this.graphics);
         }
     }
 }
@@ -152,7 +152,7 @@ Core.prototype.onLoad = function() {
         s = this.scenes[i];
         if(s.onLoad != null) {
 
-            s.onLoad(this.assets);
+            s.onLoad(this.assets, this.evMan, this.graphics);
         }
     }
 }

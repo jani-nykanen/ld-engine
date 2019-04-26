@@ -26,5 +26,8 @@ cp ../dist/ld_engine.min.js "../$1/lib/ld_engine.min.js"
 # Copy template files
 cp ../template/global.js "../$1/src/global.js"
 cp ../template/main.js "../$1/src/main.js"
+cp ../template/game/camera.js "../$1/src/game/camera.js"
+cp ../template/game/stage.js "../$1/src/game/stage.js"
+cp ../template/game/objman.js "../$1/src/game/objman.js"
+cp ../template/game/player.js "../$1/src/game/player.js"
 cp ../template/game/game.js "../$1/src/game/game.js"
-

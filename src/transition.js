@@ -14,6 +14,13 @@ let Fade = {
     In: 0,
     Out: 1,
 };
+// Transition effect
+let Effect = {
+    Fading: 0,
+    HBars: 1,
+    VBars: 2,
+    Bars: 3
+};
 
 
 // Constructor
@@ -23,13 +30,14 @@ let Transition = function() {
     this.speed = 1;
     this.color = {r: 0, g: 0, b: 0};
     this.active = false;
+    this.effect = 0;
     this.division = -1;
     this.cb = null;
 }
 
 
 // Activate
-Transition.prototype.activate = function(mode, speed, cb, color, div) {
+Transition.prototype.activate = function(mode, speed, cb, color, div, eff) {
 
     this.mode = mode;
     this.speed = speed;
@@ -37,6 +45,7 @@ Transition.prototype.activate = function(mode, speed, cb, color, div) {
     this.active = true;
     this.timer = INITIAL_TRANSITION_TIME;
     this.division = (div == null) ? -1 : div;
+    this.effect = eff == null ? Effect.Fading : eff;
 
     if(color != null) {
 
@@ -93,7 +102,44 @@ Transition.prototype.draw = function(g) {
     if(this.division > 0)
         alpha = ((alpha*this.division)|0) / this.division;
 
-    // Fill screen
-    this.color.a = alpha;
-    g.fillRect(0, 0, w, h, this.color);
+    this.color.a = 1.0;
+    let th = (alpha * g.canvas.height/2) | 0;
+    let tw = (alpha * g.canvas.width/2) | 0;
+
+    switch(this.effect) {
+
+    case Effect.Fading:
+        // Fill screen
+        this.color.a = alpha;
+        g.fillRect(0, 0, w, h, this.color);  
+        break;
+    
+    case Effect.VBars:
+    {
+        g.fillRect(0, 0, g.canvas.width, th, this.color);
+        g.fillRect(0, g.canvas.height-th, g.canvas.width, th, this.color);
+        break;
+    }
+
+    case Effect.HBars:
+    {
+        g.fillRect(0, 0, tw, g.canvas.height, this.color);
+        g.fillRect(g.canvas.width-tw, 0, tw, g.canvas.height, this.color);
+        break;
+    }
+
+    case Effect.Bars:
+    {
+        g.fillRect(0, 0, g.canvas.width, th, this.color);
+        g.fillRect(0, g.canvas.height-th, g.canvas.width, th, this.color);
+        g.fillRect(0, 0, tw, g.canvas.height, this.color);
+        g.fillRect(g.canvas.width-tw, 0, tw, g.canvas.height, this.color);
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    
 }
