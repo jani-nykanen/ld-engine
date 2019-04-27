@@ -87,3 +87,11 @@ AnimatedSprite.prototype.draw = function (g, bmp, dx, dy, flip) {
 
     this.drawFrame(g, bmp, this.frame, this.row, dx, dy, flip);
 }
+
+
+// Draw scale
+AnimatedSprite.prototype.drawScaled = function (g, bmp, dx, dy, dw, dh, flip) {
+
+    g.drawScaledBitmapRegion(bmp, this.width * this.frame,
+        this.height * this.row, this.width, this.height, dx, dy, dw, dh, flip);
+}
