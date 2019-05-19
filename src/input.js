@@ -49,6 +49,34 @@ let InputManager = function (g) {
         this.mouseMove(e.clientX, e.clientY);
     });
 
+    // Touch start
+    window.addEventListener("touchstart", (e) => {
+
+        e.preventDefault();
+        this.mouseButtonPressed(0);
+        this.mouseMove(e.touches[0].clientX, 
+            e.touches[0].clientY);
+    },{ passive: false });
+    // Touch end
+    window.addEventListener("touchend", (e) => {
+
+        e.preventDefault();
+        this.mouseButtonReleased(0);
+    },{ passive: false });
+    // Touch cancle
+    window.addEventListener("touchcancel", (e) => {
+
+        e.preventDefault();
+        this.mouseButtonReleased(0);
+    },{ passive: false });
+    // Touch move
+    window.addEventListener("touchmove", (e) => {
+
+        e.preventDefault();
+        this.mouseMove(e.touches[0].clientX, 
+            e.touches[0].clientY);
+    },{ passive: false });
+
     // Initialize key & mouse states
     this.keyStates = new Array(KEY_STATE_MAX);
     for(let i = 0; i < this.keyStates.length; ++ i) {
@@ -155,6 +183,9 @@ InputManager.prototype.mouseMove = function(x, y) {
     this.mousePos.x = (x / this.g.csize.x) * this.g.canvas.width;
     this.mousePos.y = (y / this.g.csize.y) * this.g.canvas.height;
 }
+
+
+// Touch event
 
 
 // Update input manager

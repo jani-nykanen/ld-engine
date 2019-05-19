@@ -15,7 +15,7 @@ let Flip = {
 
 
 // Constructor
-let GraphicsCore = function(bitmaps) {
+let GraphicsCore = function(bitmaps, scaleHeight) {
 
     // Get canvas & context
     this.canvas = document.getElementById("canvas");
@@ -26,8 +26,16 @@ let GraphicsCore = function(bitmaps) {
     this.cpos = new Vec2();
     this.csize = new Vec2();
 
+    // If fit the canvas to mobile device
+    // portrait mode
+    this.scaleHeight = scaleHeight;
+    // Limiting ratio
+    this.limitRatio = this.canvas.width / this.canvas.height;
+
     // Resize canvas now
     this.resize(window.innerWidth, window.innerHeight);
+    this.cw = this.canvas.width;
+    this.ch = this.canvas.height;
 
     // Reference to bitmaps
     this.bitmaps = bitmaps;
@@ -55,19 +63,49 @@ GraphicsCore.prototype.getColorString = function(r, g, b, a) {
 GraphicsCore.prototype.resize = function(w, h) {
 
     let c = this.canvas;
-
-    // Find the best multiplier for
-    // square pixels
-    let hratio = (w / c.width) | 0;
-    let vratio = (h / c.height) | 0;
-    let mul = Math.min(hratio, vratio);
-    
-    // Compute properties
     let width, height, x, y;
-    width = c.width * mul;
-    height = c.height * mul;
-    x = w/2 - width/2;
-    y = h/2 - height/2;
+
+    if(this.scaleHeight) {   
+        
+        // Preserve vertical viewport
+        if(w/h >= this.limitRatio) {
+
+            this.canvas.width = this.cw;
+            this.canvas.height = this.ch;
+
+            width = h / this.ch * this.cw;
+            height = h;
+
+            x = w/2 - width/2;
+            y = 0;
+        }
+        // Scale height
+        else {
+            x = 0;
+            y = 0;
+            width = w;
+            height = h;
+
+            this.canvas.width = this.cw;
+            this.canvas.height = this.canvas.width/w * h;
+        }
+    }
+    else 
+    {
+
+        // Find the best multiplier for
+        // square pixels
+        let hratio = (w / c.width) | 0;
+        let vratio = (h / c.height) | 0;
+        let mul = Math.min(hratio, vratio);
+        
+        // Compute properties
+        width = c.width * mul;
+        height = c.height * mul;
+        x = w/2 - width/2;
+        y = h/2 - height/2;
+
+    }
 
     // Store position & size
     this.cpos.x = x;

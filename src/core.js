@@ -232,11 +232,16 @@ Core.prototype.loop = function(ts) {
 
 
 // Run
-Core.prototype.run = function(fps, assetContent, padConfig) {
+Core.prototype.run = function(fps, assetContent, padConfig, mobile) {
 
     // Initialize
     this.framerate = fps == null ? 30 : fps;
     this.init(assetContent, padConfig);
+
+    if(mobile) {
+
+        this.toggleMobileViewport(mobile);
+    }
 
     // Enter the loop
     window.requestAnimationFrame( (ts) => this.loop(ts) );
@@ -273,5 +278,16 @@ Core.prototype.addScene = function(scene, makeActive, makeGlobal) {
     if(makeGlobal) {
 
         this.globalScene = scene;
+    }
+}
+
+
+// Toggle mobile viewport
+Core.prototype.toggleMobileViewport = function(state) {
+
+    this.graphics.scaleHeight = state;
+    if(state) {
+
+        this.graphics.resize(window.innerWidth, window.innerHeight);
     }
 }
