@@ -35,7 +35,7 @@ let InputManager = function (g) {
     window.addEventListener("mousedown", (e) => {
         window.focus();
         e.preventDefault();
-        this.mouseButtonPressed(e.button);
+        this.mouseButtonPressed(e.button, e.clientX, e.clientY);
     });
     // Mouse up
     window.addEventListener("mouseup", (e) => {
@@ -53,7 +53,9 @@ let InputManager = function (g) {
     window.addEventListener("touchstart", (e) => {
 
         e.preventDefault();
-        this.mouseButtonPressed(0);
+        this.mouseButtonPressed(0, 
+            e.touches[0].clientX, 
+            e.touches[0].clientY);
         this.mouseMove(e.touches[0].clientX, 
             e.touches[0].clientY);
     },{ passive: false });
@@ -89,8 +91,16 @@ let InputManager = function (g) {
         this.mouseStates[i] = State.Up;
     }
 
-    // Mouse position (w.r.t the canvas)
+    // Mouse position data (w.r.t the canvas)
     this.mousePos = new Vec2();
+    // Touch info (also for mouse, when the left button down)
+    this.touchPos = this.mousePos;
+    this.oldTouchPos = new Vec2();
+    this.touchStart = new Vec2();
+    this.touchDelta = new Vec2();
+    this.touchDirection = new Vec2();
+    this.touchDistance = 0;
+    this.touchDown = false;
 
     // If any key was pressed during
     // the latest frame
@@ -161,9 +171,16 @@ InputManager.prototype.keyReleased = function (key) {
 
 
 // Mouse button pressed event
-InputManager.prototype.mouseButtonPressed = function (b) {
+InputManager.prototype.mouseButtonPressed = function (b, x, y) {
 
     this.eventPressed(this.mouseStates, b);
+    
+    if(b == 0) {
+
+        this.touchStart.x = (x / this.g.csize.x) * this.g.canvas.width;
+        this.touchStart.y = (y / this.g.csize.y) * this.g.canvas.height;
+        this.touchDown = true;
+    }
 }
 
 
@@ -171,6 +188,10 @@ InputManager.prototype.mouseButtonPressed = function (b) {
 InputManager.prototype.mouseButtonReleased = function (b) {
 
     this.eventReleased(this.mouseStates, b);
+    if(b == 0) {
+
+        this.touchDown = false;
+    }
 }
 
 
@@ -185,17 +206,44 @@ InputManager.prototype.mouseMove = function(x, y) {
 }
 
 
-// Touch event
-
-
 // Update input manager
 InputManager.prototype.update = function() {
+
+    const EPS = 0.01;
 
     this.anyKeyPressed = false;
 
     // Update states
     this.updateStateArray(this.keyStates);
     this.updateStateArray(this.mouseStates);
+
+    // Compute touch distance
+    if(this.touchDown) {
+
+        this.touchDistance = Math.hypot(
+            this.touchPos.x-this.touchStart.x,
+            this.touchPos.y-this.touchStart.y);
+    }
+    else {
+
+        this.touchDistance = 0.0;
+    }   
+
+    // Compute touch delta
+    this.touchDelta.x = this.touchPos.x-this.oldTouchPos.x;
+    this.touchDelta.y = this.touchPos.y-this.oldTouchPos.y;
+
+    // Compute direction
+    if(this.touchDistance > EPS) {
+
+        this.touchDirection.x = this.touchPos.x-this.touchStart.x;
+        this.touchDirection.y = this.touchPos.y-this.touchStart.y;
+
+        this.touchDirection.x /= this.touchDistance;
+        this.touchDirection.y /= this.touchDistance;
+    }
+
+    this.oldTouchPos = this.touchPos.copy();
 }
 
 
