@@ -146,6 +146,9 @@ Core.prototype.draw = function() {
 // "On load" event
 Core.prototype.onLoad = function() {
 
+    // Parse tilemaps
+    this.assets.parseTilemaps();
+
     let s;
     for(let i = 0; i < this.scenes.length; ++ i) {
 

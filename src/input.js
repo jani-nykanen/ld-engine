@@ -67,8 +67,10 @@ let InputManager = function (g) {
     },{ passive: false });
     // Touch cancle
     window.addEventListener("touchcancel", (e) => {
-
-        e.preventDefault();
+    
+        if (e.cancelable) {
+            e.preventDefault(); 
+        }
         this.mouseButtonReleased(0);
     },{ passive: false });
     // Touch move
@@ -176,6 +178,9 @@ InputManager.prototype.mouseButtonPressed = function (b, x, y) {
     this.eventPressed(this.mouseStates, b);
     
     if(b == 0) {
+    
+        x -= this.g.cpos.x;
+        y -= this.g.cpos.y;
 
         this.touchStart.x = (x / this.g.csize.x) * this.g.canvas.width;
         this.touchStart.y = (y / this.g.csize.y) * this.g.canvas.height;
@@ -241,6 +246,11 @@ InputManager.prototype.update = function() {
 
         this.touchDirection.x /= this.touchDistance;
         this.touchDirection.y /= this.touchDistance;
+    }
+    else {
+        
+        this.touchDirection.x = 0;
+        this.touchDirection.y = 0;
     }
 
     this.oldTouchPos = this.touchPos.copy();

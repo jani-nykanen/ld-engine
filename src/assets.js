@@ -6,7 +6,9 @@
 
 
 // Constructor
-let AssetPack = function(content) {
+let AssetPack = function(content, gl) {
+
+    this.gl = gl;
 
     // How many files loaded
     this.loaded = 0;
@@ -16,7 +18,7 @@ let AssetPack = function(content) {
     // Assets
     this.bitmaps = {};
     this.audio = {};
-    this.documents = {};
+    this.tilemaps = {};
 
     // If something to load, load
     if(content != null) {
@@ -36,10 +38,11 @@ let AssetPack = function(content) {
         }
 
         // Set documents to be loaded
-        for(let k in content.documents) {
+        for(let k in content.tilemaps) {
 
             this.loadXML(k, 
-                content.docPath + "/" + content.documents[k]);
+                content.mapPath + "/" + content.tilemaps[k], 
+                this.tilemaps);
         }
 
     }
@@ -71,7 +74,7 @@ AssetPack.prototype.loadSound = function(name, url) {
 
 
 // Load an XML document
-AssetPack.prototype.loadXML = function(name, url) {
+AssetPack.prototype.loadXML = function(name, url, docs) {
 
     ++ this.total;
 
@@ -86,7 +89,7 @@ AssetPack.prototype.loadXML = function(name, url) {
 
             if(String(xobj.status) == "200") {
                 
-                this.documents[name] = xobj.responseText;
+                docs[name] = xobj.responseText;
             }
             ++ this.loaded;
         }
@@ -108,4 +111,14 @@ AssetPack.prototype.getPercentage = function() {
 
     if(this.total == 0) return 0.0;
     return this.loaded / this.total;
+}
+
+
+// Parse tilemaps
+AssetPack.prototype.parseTilemaps = function() {
+
+    for(let k in this.tilemaps) {
+
+        this.tilemaps[k] = new Tilemap(this.tilemaps[k]);
+    }
 }

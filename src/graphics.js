@@ -33,9 +33,9 @@ let GraphicsCore = function(bitmaps, scaleHeight) {
     this.limitRatio = this.canvas.width / this.canvas.height;
 
     // Resize canvas now
-    this.resize(window.innerWidth, window.innerHeight);
     this.cw = this.canvas.width;
     this.ch = this.canvas.height;
+    this.resize(window.innerWidth, window.innerHeight);
 
     // Reference to bitmaps
     this.bitmaps = bitmaps;
@@ -92,6 +92,9 @@ GraphicsCore.prototype.resize = function(w, h) {
     }
     else 
     {
+    
+        this.canvas.width = this.cw;
+        this.canvas.height = this.ch;
 
         // Find the best multiplier for
         // square pixels

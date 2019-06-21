@@ -14,9 +14,9 @@ let main = function() {
             font: "font.png"
         },
 
-        // Documents
-        docPath: "assets/maps",
-        documents: { },
+        // Tilemap
+        mapPath: "assets/tilemaps",
+        tilemaps: { },
 
         // Samples
         soundPath: "assets/audio",
